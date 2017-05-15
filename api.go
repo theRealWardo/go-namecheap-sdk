@@ -69,8 +69,6 @@ func (c *Client) NewRequest(body map[string]string) (*http.Request, error) {
 
 	rBody := encodeBody(body)
 
-	fmt.Printf("The body: %s\n", rBody)
-
 	if err != nil {
 		return nil, fmt.Errorf("Error encoding request body: %s", err)
 	}
