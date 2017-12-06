@@ -30,42 +30,42 @@ type RecordsCreateResult struct {
 }
 
 type NSListResponse struct {
-    XMLName xml.Name `xml:"ApiResponse`
-    Errors []struct {
-        Message string `xml:",chardata"`
-        Number  string `xml:"Number,attr"`
-    } `xml:"Errors>Error"`
-    CommandResponse struct {
-        DomainDNSGetListResult []string `xml:"DomainDNSGetListResult>Nameserver"`
-    } `sml:CommandResponse"`
+	XMLName xml.Name `xml:"ApiResponse`
+	Errors  []struct {
+		Message string `xml:",chardata"`
+		Number  string `xml:"Number,attr"`
+	} `xml:"Errors>Error"`
+	CommandResponse struct {
+		DomainDNSGetListResult []string `xml:"DomainDNSGetListResult>Nameserver"`
+	} `sml:CommandResponse"`
 }
 
 type NSSetCustomRepsonse struct {
-    XMLName xml.Name `xml:"ApiResponse`
-    Errors []struct {
-        Message string `xml:",chardata"`
-        Number  string `xml:"Number,attr"`
-    } `xml:"Errors>Error"`
-    CommandResponse struct {
-        DomainDNSSetCustomResult struct {
-            Domain  string `xml:"Domain,attr"`
-            Updated bool   `xml:"Updated,attr"`
-        } `xml:"DomainDNSSetCustomResult"`
-    } `xml:"CommandResponse"`
+	XMLName xml.Name `xml:"ApiResponse`
+	Errors  []struct {
+		Message string `xml:",chardata"`
+		Number  string `xml:"Number,attr"`
+	} `xml:"Errors>Error"`
+	CommandResponse struct {
+		DomainDNSSetCustomResult struct {
+			Domain  string `xml:"Domain,attr"`
+			Updated bool   `xml:"Updated,attr"`
+		} `xml:"DomainDNSSetCustomResult"`
+	} `xml:"CommandResponse"`
 }
 
 type NSSetDefaultResponse struct {
-    XMLName xml.Name `xml:"ApiResponse`
-    Errors []struct {
-        Message string `xml:",chardata"`
-        Number  string `xml:"Number,attr"`
-    } `xml:"Errors>Error"`
-    CommandResponse struct {
-        DomainDNSSetDefaultResult struct {
-            Domain  string `xml:"Domain,attr"`
-            Updated bool   `xml:"Updated,attr"`
-        } `xml:"DomainDNSSetDefaultResult"`
-    } `xml:"CommandResponse"`
+	XMLName xml.Name `xml:"ApiResponse`
+	Errors  []struct {
+		Message string `xml:",chardata"`
+		Number  string `xml:"Number,attr"`
+	} `xml:"Errors>Error"`
+	CommandResponse struct {
+		DomainDNSSetDefaultResult struct {
+			Domain  string `xml:"Domain,attr"`
+			Updated bool   `xml:"Updated,attr"`
+		} `xml:"DomainDNSSetDefaultResult"`
+	} `xml:"CommandResponse"`
 }
 
 // Record is used to represent a retrieved Record. All properties
