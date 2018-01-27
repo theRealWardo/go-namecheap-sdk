@@ -15,16 +15,24 @@ func TestHost__GetHosts(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(recs) != 2 {
-		t.Errorf("got %d records", len(recs))
+	if len(recs) == 0 {
+		t.Fatal("expected records")
 	}
-
-	rec := recs[0]
-	if !rec.Equal(testRecord) {
-		diff := rec.diff(testRecord)
-		for k, v := range diff {
-			t.Errorf("%s = %q\n", k, v)
+	var found bool
+	for i := range recs {
+		if recs[i].Name == "www" {
+			found = true
+			diff := recs[i].diff(testRecord)
+			_, exists := diff["Id"]
+			if len(diff) > 0 && !exists { // expected 'Id' different, but it's something else
+				for k, v := range diff {
+					t.Errorf("%s = %q\n", k, v)
+				}
+			}
 		}
+	}
+	if !found {
+		t.Error("didn't find record")
 	}
 }
 
