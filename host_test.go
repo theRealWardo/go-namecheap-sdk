@@ -2,72 +2,23 @@ package namecheap
 
 import (
 	"github.com/pearkes/dnsimple/testutil"
-	"strconv"
 	"strings"
 	"testing"
 
-	. "github.com/motain/gocheck"
+	"github.com/motain/gocheck"
 )
 
-func Test(t *testing.T) {
-	TestingT(t)
+func TestHost(t *testing.T) {
+	gocheck.TestingT(t)
 }
 
-type S struct {
-	client *Client
-}
-
-var _ = Suite(&S{})
+var _ = gocheck.Suite(&S{})
 
 var testServer = testutil.NewHTTPServer()
 
-func (s *S) SetUpSuite(c *C) {
-	testServer.Start()
-	var err error
-	s.client, err = NewClient("user", "apiuser", "secret", "128.0.0.1", true)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func (s *S) TearDownTest(c *C) {
-	testServer.Flush()
-}
-
-func (s *S) Test_SetHosts(c *C) {
+func (s *S) Test_SetHosts(c *gocheck.C) {
 	testServer.Response(200, nil, hostSetExample)
 	var records []Record
-
-	record := Record{
-		HostName:   "foobar",
-		RecordType: "CNAME",
-		Address:    "test.domain.",
-	}
-
-	records = append(records, record)
-
-	id, err := s.client.SetHosts("example.com", records)
-
-	_ = testServer.WaitRequest()
-
-	c.Assert(err, IsNil)
-}
-
-func (s *S) Test_GetHosts(c *C) {
-	testServer.Response(200, nil, hostGetExample)
-
-	records, err := s.client.GetHosts("example.com")
-
-	_ = testServer.WaitRequest()
-
-	c.Assert(len(records), Equals, 1)
-	c.Assert(err, IsNil)
-}
-
-func (s *S) Test_SetHosts_fail(c *C) {
-	testServer.Response(200, nil, hostExampleError)
-
-	var records []Records
 
 	record := Record{
 		HostName:   "foobar",
@@ -81,7 +32,38 @@ func (s *S) Test_SetHosts_fail(c *C) {
 
 	_ = testServer.WaitRequest()
 
-	c.Assert(strings.Contains(err.Error(), "2019166"), Equals, true)
+	c.Assert(err, gocheck.IsNil)
+}
+
+func (s *S) Test_GetHosts(c *gocheck.C) {
+	testServer.Response(200, nil, hostGetExample)
+
+	records, err := s.client.GetHosts("example.com")
+
+	_ = testServer.WaitRequest()
+
+	c.Assert(len(records), gocheck.Equals, 1)
+	c.Assert(err, gocheck.IsNil)
+}
+
+func (s *S) Test_SetHosts_fail(c *gocheck.C) {
+	testServer.Response(200, nil, hostExampleError)
+
+	var records []Record
+
+	record := Record{
+		HostName:   "foobar",
+		RecordType: "CNAME",
+		Address:    "test.domain.",
+	}
+
+	records = append(records, record)
+
+	_, err := s.client.SetHosts("example.com", records)
+
+	_ = testServer.WaitRequest()
+
+	c.Assert(strings.Contains(err.Error(), "2019166"), gocheck.Equals, true)
 }
 
 var hostExampleError = `

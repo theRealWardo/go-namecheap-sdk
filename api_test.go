@@ -17,7 +17,7 @@ func makeClient(t *testing.T) *Client {
 func TestClient_NewRequest(t *testing.T) {
 	c := makeClient(t)
 
-	body := map[string]interface{}{
+	body := map[string]string{
 		"foo": "bar",
 		"baz": "bar",
 	}
