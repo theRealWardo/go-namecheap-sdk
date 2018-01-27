@@ -23,12 +23,7 @@ const (
 	sandboxApiUrl   = "https://api.sandbox.namecheap.com/xml.response"
 )
 
-// New returns a Client instance by reading environment variables:
-// NAMECHEAP_USERNAME        Username: e.g. adamdecaf
-// NAMECHEAP_API_USER        TODO
-// NAMECHEAP_API_TOKEN       From https://ap.www.namecheap.com/Profile/Tools/ApiAccess
-// NAMECHEAP_WHITELISTED_IP  Your IP
-// NAMECHEAP_USE_SANDBOX     Switch to their sandbox environment
+// New returns a Client instance by reading environment variables
 func New() (*Client, error) {
 	username := os.Getenv("NAMECHEAP_USERNAME")
 	apiuser := os.Getenv("NAMECHEAP_API_USER")
