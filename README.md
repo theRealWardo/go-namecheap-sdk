@@ -1,6 +1,6 @@
 # namecheap
 
-Golang library for interacting with Namecheap's API.
+Golang library for interacting with Namecheap's API. [GoDoc](https://godoc.org/github.com/adamdecaf/namecheap)
 
 ### Getting
 
