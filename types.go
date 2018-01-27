@@ -5,7 +5,7 @@ import (
 )
 
 type RecordsResponse struct {
-	XMLName xml.Name `xml:"ApiResponse`
+	XMLName xml.Name `xml:"ApiResponse"`
 	Errors  []struct {
 		Message string `xml:",chardata"`
 		Number  string `xml:"Number,attr"`
@@ -16,7 +16,7 @@ type RecordsResponse struct {
 }
 
 type RecordsCreateResult struct {
-	XMLName xml.Name `xml:"ApiResponse`
+	XMLName xml.Name `xml:"ApiResponse"`
 	Errors  []struct {
 		Message string `xml:",chardata"`
 		Number  string `xml:"Number,attr"`
