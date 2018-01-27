@@ -6,6 +6,10 @@ import (
 )
 
 func TestNS__GetNS(t *testing.T) {
+	if !clientEnabled {
+		t.Skip("namecheap credentials not configured")
+	}
+
 	ns, err := testClient.GetNS(testDomain)
 	if err != nil {
 		t.Fatal(err)

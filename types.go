@@ -2,6 +2,7 @@ package namecheap
 
 import (
 	"encoding/xml"
+	"fmt"
 )
 
 type RecordsResponse struct {
@@ -81,4 +82,46 @@ type Record struct {
 	TTL                int    `xml:"TTL,attr"`
 	IsActive           bool   `xml:"IsActive,attr"`
 	IsDDNSEnabled      bool   `xml:"IsDDNSEnabled,attr"`
+}
+
+// return a map[string]string of differences between two Records
+func (r *Record) diff(other *Record) map[string]string {
+	out := make(map[string]string, 0)
+
+	if r.Name != other.Name {
+		out["Name"] = other.Name
+	}
+	if r.FriendlyName != other.FriendlyName {
+		out["FriendlyName"] = other.FriendlyName
+	}
+	if r.Address != other.Address {
+		out["Address"] = other.Address
+	}
+	if r.MXPref != other.MXPref {
+		out["MXPref"] = string(other.MXPref)
+	}
+	if r.AssociatedAppTitle != other.AssociatedAppTitle {
+		out["AssociatedAppTitle"] = other.AssociatedAppTitle
+	}
+	if r.Id != other.Id {
+		out["Id"] = string(other.Id)
+	}
+	if r.RecordType != other.RecordType {
+		out["RecordType"] = other.RecordType
+	}
+	if r.TTL != other.TTL {
+		out["TTL"] = string(other.TTL)
+	}
+	if r.IsActive != other.IsActive {
+		out["IsActive"] = fmt.Sprintf("%v", other.IsActive)
+	}
+	if r.IsDDNSEnabled != other.IsDDNSEnabled {
+		out["IsDDNSEnabled"] = fmt.Sprintf("%v", other.IsDDNSEnabled)
+	}
+
+	return out
+}
+
+func (r *Record) Equal(other *Record) bool {
+	return len(r.diff(other)) == 0
 }

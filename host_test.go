@@ -18,48 +18,13 @@ func TestHost__GetHosts(t *testing.T) {
 	if len(recs) != 2 {
 		t.Errorf("got %d records", len(recs))
 	}
+
 	rec := recs[0]
-	testRecord := Record{
-		Name:               "www",
-		FriendlyName:       "CNAME Record",
-		Address:            "parkingpage.namecheap.com.",
-		MXPref:             10,
-		AssociatedAppTitle: "",
-		Id:                 92111926,
-		RecordType:         "CNAME",
-		TTL:                1800,
-		IsActive:           true,
-		IsDDNSEnabled:      false,
-	}
-	if rec.Name != testRecord.Name {
-		t.Errorf("%q != %q", rec.Name, testRecord.Name)
-	}
-	if rec.FriendlyName != testRecord.FriendlyName {
-		t.Errorf("%q != %q", rec.FriendlyName, testRecord.FriendlyName)
-	}
-	if rec.Address != testRecord.Address {
-		t.Errorf("%q != %q", rec.Address, testRecord.Address)
-	}
-	if rec.MXPref != testRecord.MXPref {
-		t.Errorf("%q != %q", rec.MXPref, testRecord.MXPref)
-	}
-	if rec.AssociatedAppTitle != testRecord.AssociatedAppTitle {
-		t.Errorf("%q != %q", rec.AssociatedAppTitle, testRecord.AssociatedAppTitle)
-	}
-	if rec.Id != testRecord.Id {
-		t.Errorf("%q != %q", rec.Id, testRecord.Id)
-	}
-	if rec.RecordType != testRecord.RecordType {
-		t.Errorf("%q != %q", rec.RecordType, testRecord.RecordType)
-	}
-	if rec.TTL != testRecord.TTL {
-		t.Errorf("%q != %q", rec.TTL, testRecord.TTL)
-	}
-	if rec.IsActive != testRecord.IsActive {
-		t.Errorf("%v != %v", rec.IsActive, testRecord.IsActive)
-	}
-	if rec.IsDDNSEnabled != testRecord.IsDDNSEnabled {
-		t.Errorf("%v != %v", rec.IsDDNSEnabled, testRecord.IsDDNSEnabled)
+	if !rec.Equal(testRecord) {
+		diff := rec.diff(testRecord)
+		for k, v := range diff {
+			t.Errorf("%s = %q\n", k, v)
+		}
 	}
 }
 

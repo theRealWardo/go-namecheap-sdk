@@ -1,17 +1,41 @@
 package namecheap
 
 import (
+	"os"
 	"testing"
 )
 
 var (
-	testDomain = "dsm.rent"
+	testDomain string
+	testRecord *Record
 
 	testClient, _ = New()
-	clientEnabled = testClient != nil // check this once -- used in tests
+
+	// check this once -- used in tests
+	clientEnabled = testClient != nil && os.Getenv("MOCKED") == ""
 )
 
+func init() {
+	testDomain = "dsm.rent"
+	testRecord = &Record{
+		Name:               "www",
+		FriendlyName:       "CNAME Record",
+		Address:            "parkingpage.namecheap.com.",
+		MXPref:             10,
+		AssociatedAppTitle: "",
+		Id:                 92111926,
+		RecordType:         "CNAME",
+		TTL:                1800,
+		IsActive:           true,
+		IsDDNSEnabled:      false,
+	}
+}
+
 func TestClient__fail(t *testing.T) {
+	if !clientEnabled {
+		t.Skip("namecheap credentials not configured")
+	}
+
 	cases := []struct {
 		username, apiuser, token, ip string
 	}{

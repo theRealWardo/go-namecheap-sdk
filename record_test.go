@@ -7,34 +7,23 @@ import (
 	// "github.com/motain/gocheck"
 )
 
-func TestRecord__todo(t *testing.T) {
+func TestRecord__ReadRecord(t *testing.T) {
 	if !clientEnabled {
 		t.Skip("namecheap credentials not configured")
 	}
+
+	id := testClient.CreateHash(testRecord)
+	rec, err := testClient.ReadRecord(testDomain, id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !rec.Equal(testRecord) {
+		diff := rec.diff(testRecord)
+		for k, v := range diff {
+			t.Errorf("%s = %q\n", k, v)
+		}
+	}
 }
-
-// func TestRecords(t *testing.T) {
-// 	gocheck.TestingT(t)
-// }
-
-// type S struct {
-// 	client *Client
-// }
-
-// var _ = gocheck.Suite(&S{})
-
-// func (s *S) SetUpSuite(c *gocheck.C) {
-// 	testServer.Start()
-// 	var err error
-// 	s.client, err = NewClient("user", "apiuser", "secret", "128.0.0.1", true)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// }
-
-// func (s *S) TearDownTest(c *gocheck.C) {
-// 	testServer.Flush()
-// }
 
 // func (s *S) Test_AddRecord(c *gocheck.C) {
 // 	testServer.Response(200, nil, recordCreateExample)
@@ -82,28 +71,6 @@ func TestRecord__todo(t *testing.T) {
 // 	_ = testServer.WaitRequest()
 
 // 	c.Assert(strings.Contains(err.Error(), "2019166"), gocheck.Equals, true)
-// }
-
-// func (s *S) Test_RetrieveRecord(c *gocheck.C) {
-// 	testServer.Response(200, nil, recordCreateExample)
-
-// 	record := &Record{
-// 		HostName:   "foobar",
-// 		RecordType: "CNAME",
-// 		Address:    "test.domain.",
-// 	}
-// 	hashId := s.client.CreateHash(record)
-
-// 	record, err := s.client.ReadRecord("example.com", hashId)
-
-// 	_ = testServer.WaitRequest()
-
-// 	c.Assert(err, gocheck.IsNil)
-// 	c.Assert(strconv.Itoa(record.MXPref), gocheck.Equals, "10")
-// 	c.Assert(strconv.Itoa(record.TTL), gocheck.Equals, "1800")
-// 	c.Assert(record.HostName, gocheck.Equals, "foobar")
-// 	c.Assert(record.Address, gocheck.Equals, "test.domain.")
-// 	c.Assert(record.RecordType, gocheck.Equals, "CNAME")
 // }
 
 // var recordExampleError = `
