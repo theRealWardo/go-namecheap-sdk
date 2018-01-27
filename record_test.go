@@ -1,27 +1,24 @@
 package namecheap
 
 import (
-	"github.com/pearkes/dnsimple/testutil"
 	"strconv"
 	"strings"
 	"testing"
 
-	. "github.com/motain/gocheck"
+	"github.com/motain/gocheck"
 )
 
-func Test(t *testing.T) {
-	TestingT(t)
+func TestRecords(t *testing.T) {
+	gocheck.TestingT(t)
 }
 
 type S struct {
 	client *Client
 }
 
-var _ = Suite(&S{})
+var _ = gocheck.Suite(&S{})
 
-var testServer = testutil.NewHTTPServer()
-
-func (s *S) SetUpSuite(c *C) {
+func (s *S) SetUpSuite(c *gocheck.C) {
 	testServer.Start()
 	var err error
 	s.client, err = NewClient("user", "apiuser", "secret", "128.0.0.1", true)
@@ -30,27 +27,27 @@ func (s *S) SetUpSuite(c *C) {
 	}
 }
 
-func (s *S) TearDownTest(c *C) {
+func (s *S) TearDownTest(c *gocheck.C) {
 	testServer.Flush()
 }
 
-func (s *S) Test_AddRecord(c *C) {
+func (s *S) Test_AddRecord(c *gocheck.C) {
 	testServer.Response(200, nil, recordCreateExample)
 
-	record := Record{
+	record := &Record{
 		HostName:   "foobar",
 		RecordType: "CNAME",
 		Address:    "test.domain.",
 	}
 
-	_, err := s.client.AddRecord("example.com", &record)
+	_, err := s.client.AddRecord("example.com", record)
 
 	_ = testServer.WaitRequest()
 
-	c.Assert(err, IsNil)
+	c.Assert(err, gocheck.IsNil)
 }
 
-func (s *S) Test_UpdateRecord(c *C) {
+func (s *S) Test_UpdateRecord(c *gocheck.C) {
 	testServer.Response(200, nil, recordCreateExample)
 
 	record := Record{
@@ -58,15 +55,15 @@ func (s *S) Test_UpdateRecord(c *C) {
 		RecordType: "CNAME",
 		Address:    "test.domain.",
 	}
-	hashId = s.client.CreateHash(&record)
+	hashId := s.client.CreateHash(&record)
 	err := s.client.UpdateRecord("example.com", hashId, &record)
 
 	_ = testServer.WaitRequest()
 
-	c.Assert(err, IsNil)
+	c.Assert(err, gocheck.IsNil)
 }
 
-func (s *S) Test_CreateRecord_fail(c *C) {
+func (s *S) Test_CreateRecord_fail(c *gocheck.C) {
 	testServer.Response(200, nil, recordExampleError)
 
 	record := Record{
@@ -79,29 +76,29 @@ func (s *S) Test_CreateRecord_fail(c *C) {
 
 	_ = testServer.WaitRequest()
 
-	c.Assert(strings.Contains(err.Error(), "2019166"), Equals, true)
+	c.Assert(strings.Contains(err.Error(), "2019166"), gocheck.Equals, true)
 }
 
-func (s *S) Test_RetrieveRecord(c *C) {
-	testServer.Response(200, nil, recordExample)
+func (s *S) Test_RetrieveRecord(c *gocheck.C) {
+	testServer.Response(200, nil, recordCreateExample)
 
-	record := Record{
+	record := &Record{
 		HostName:   "foobar",
 		RecordType: "CNAME",
 		Address:    "test.domain.",
 	}
-	hashId = s.client.CreateHash(&record)
+	hashId := s.client.CreateHash(record)
 
 	record, err := s.client.ReadRecord("example.com", hashId)
 
 	_ = testServer.WaitRequest()
 
-	c.Assert(err, IsNil)
-	c.Assert(string.Itoa(record.MXPref), Equals, "10")
-	c.Assert(string.Itoa(record.TTL), Equals, "1800")
-	c.Assert(record.HostName, Equals, "foobar")
-	c.Assert(record.Address, Equals, "test.domain.")
-	c.Assert(record.RecordType, Equals, "CNAME")
+	c.Assert(err, gocheck.IsNil)
+	c.Assert(strconv.Itoa(record.MXPref), gocheck.Equals, "10")
+	c.Assert(strconv.Itoa(record.TTL), gocheck.Equals, "1800")
+	c.Assert(record.HostName, gocheck.Equals, "foobar")
+	c.Assert(record.Address, gocheck.Equals, "test.domain.")
+	c.Assert(record.RecordType, gocheck.Equals, "CNAME")
 }
 
 var recordExampleError = `
