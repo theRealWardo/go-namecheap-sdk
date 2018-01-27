@@ -64,7 +64,7 @@ func (c *Client) DeleteRecord(domain string, hashId int) error {
 
 func (c *Client) CreateHash(record *Record) int {
 	var buf bytes.Buffer
-	buf.WriteString(fmt.Sprintf(record.HostName))
+	buf.WriteString(fmt.Sprintf(record.Name))
 	buf.WriteString(fmt.Sprintf(record.RecordType))
 	buf.WriteString(fmt.Sprintf(record.Address))
 	return hashcode.String(buf.String())
@@ -95,10 +95,10 @@ func (c *Client) RemoveRecordByHash(hashId int, records []Record) []Record {
 func RemoveParkingRecords(domain string, records []Record) []Record {
 	var ret []Record
 	for _, record := range records {
-		if record.RecordType == "CNAME" && record.HostName == "www" && record.Address == "parkingpage.namecheap.com." {
+		if record.RecordType == "CNAME" && record.Name == "www" && record.Address == "parkingpage.namecheap.com." {
 			continue
 		}
-		if record.RecordType == "URL" && record.HostName == "@" && record.Address == "http://www."+domain+"/?from=@" {
+		if record.RecordType == "URL" && record.Name == "@" && record.Address == "http://www."+domain+"/?from=@" {
 			continue
 		}
 		ret = append(ret, record)

@@ -5,7 +5,9 @@ import (
 )
 
 var (
-	testClient, _ = NewClient("user", "apiuser", "secret", "128.0.0.1", true)
+	testDomain = "dsm.rent"
+
+	testClient, _ = New()
 	clientEnabled = testClient != nil // check this once -- used in tests
 )
 
@@ -47,6 +49,8 @@ func TestClient__fail(t *testing.T) {
 }
 
 func TestClient_NewRequest(t *testing.T) {
+	testClient, _ := NewClient("user", "apiuser", "secret", "128.0.0.1", true)
+
 	body := map[string]string{
 		"foo": "bar",
 		"baz": "bar",

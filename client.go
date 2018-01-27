@@ -5,12 +5,17 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
 	"strconv"
 
 	"github.com/hashicorp/go-cleanhttp"
+)
+
+var (
+	debug = os.Getenv("DEBUG") != ""
 )
 
 const (
@@ -113,6 +118,15 @@ func (c *Client) NewRequest(body map[string]string) (*http.Request, error) {
 }
 
 func (c *Client) decode(reader io.Reader, obj interface{}) error {
+	if debug {
+		bs, err := ioutil.ReadAll(reader)
+		if err != nil {
+			return err
+		}
+		fmt.Printf("DEBUG: %q\n", string(bs))
+		reader = bytes.NewReader(bs) // refill `reader`
+	}
+
 	decoder := xml.NewDecoder(reader)
 	err := decoder.Decode(&obj)
 	if err != nil {

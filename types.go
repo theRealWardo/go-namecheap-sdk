@@ -32,7 +32,7 @@ type RecordsCreateResult struct {
 // Record is used to represent a retrieved Record. All properties
 // are set as strings.
 type Record struct {
-	HostName           string `xml:"Name,attr"`
+	Name               string `xml:"Name,attr"`
 	FriendlyName       string `xml:"FriendlyName,attr"`
 	Address            string `xml:"Address,attr"`
 	MXPref             int    `xml:"MXPref,attr"`

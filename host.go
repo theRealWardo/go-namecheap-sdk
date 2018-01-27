@@ -7,10 +7,17 @@ import (
 	"strings"
 )
 
-var allowedRecordTypes = [...]string{"A", "AAAA", "CNAME", "MX", "MXE", "TXT", "URL", "URL301", "FRAME"}
+const (
+	minTTL int = 60
+	maxTTL int = 60000
+)
 
-const minTTL int = 60
-const maxTTL int = 60000
+var (
+	allowedRecordTypes = []string{
+		// TODO(adam): CAA?
+		"A", "AAAA", "CNAME", "MX", "MXE", "TXT", "URL", "URL301", "FRAME",
+	}
+)
 
 func (c *Client) SetHosts(domain string, records []Record) ([]Record, error) {
 	var ret RecordsCreateResult
@@ -29,7 +36,7 @@ func (c *Client) SetHosts(domain string, records []Record) ([]Record, error) {
 	itr := 0
 	for itr < numberOfRecords {
 		var sNumb = strconv.Itoa(itr + 1)
-		params["HostName"+sNumb] = records[itr].HostName
+		params["HostName"+sNumb] = records[itr].Name
 		recordType := records[itr].RecordType
 		if !CheckRecordType(recordType) {
 			return nil, fmt.Errorf("Invalid record type")
