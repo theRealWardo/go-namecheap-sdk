@@ -33,14 +33,6 @@
   name = "github.com/hashicorp/terraform"
   version = "0.11.2"
 
-[[constraint]]
-  branch = "master"
-  name = "github.com/motain/gocheck"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/pearkes/dnsimple"
-
 [prune]
   go-tests = true
   unused-packages = true

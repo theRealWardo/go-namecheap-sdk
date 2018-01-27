@@ -13,21 +13,9 @@
   revision = "a6008b8a48a749c7c167453b9cf55ffd572b9a5d"
   version = "v0.11.2"
 
-[[projects]]
-  branch = "master"
-  name = "github.com/motain/gocheck"
-  packages = ["."]
-  revision = "9beb271d26e640863a5bf4a3c5ea40ccdd466b84"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/pearkes/dnsimple"
-  packages = ["testutil"]
-  revision = "0adf7d0dae07ba10af74af1a047c98d3d02b3382"
-
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a8673db1ac92303ad6e14b7650cda1665816257f6443d9f973821502253acdc3"
+  inputs-digest = "769476e6d1795da4d3bab5821356b15bbec9193d155da61e23be49a7a28c0786"
   solver-name = "gps-cdcl"
   solver-version = 1
