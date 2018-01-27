@@ -52,7 +52,7 @@ func (c *Client) SetHosts(domain string, records []Record) ([]Record, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	err = decode(resp.Body, &ret)
+	err = c.decode(resp.Body, &ret)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +92,7 @@ func (c *Client) GetHosts(domain string) ([]Record, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	err = decode(resp.Body, &recordsResponse)
+	err = c.decode(resp.Body, &recordsResponse)
 	if err != nil {
 		return nil, err
 	}

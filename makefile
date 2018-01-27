@@ -5,7 +5,10 @@ check:
 	go fmt ./...
 
 test: check
-	go test ./...
+	go test -v ./...
+
+build: check
+	go build github.com/adamdecaf/namecheap
 
 deps:
 	dep ensure
