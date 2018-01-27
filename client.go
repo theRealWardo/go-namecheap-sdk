@@ -34,9 +34,11 @@ func New() (*Client, error) {
 	apiuser := os.Getenv("NAMECHEAP_API_USER")
 	token := os.Getenv("NAMECHEAP_API_TOKEN")
 	ip := os.Getenv("NAMECHEAP_WHITELISTED_IP") // TODO(adam): attempt local read?
-	sbx := os.Getenv("NAMECHEAP_USE_SANDBOX") != ""
 
-	return NewClient(username, apiuser, token, ip, sbx)
+	sbx := os.Getenv("NAMECHEAP_USE_SANDBOX")
+	useSbx := sbx != "" && sbx != "false"
+
+	return NewClient(username, apiuser, token, ip, useSbx)
 }
 
 // NewClient creates a Client instance from the provided configuration
