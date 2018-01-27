@@ -30,18 +30,18 @@ type RecordsCreateResult struct {
 }
 
 type NSListResponse struct {
-	XMLName xml.Name `xml:"ApiResponse`
+	XMLName xml.Name `xml:"ApiResponse"`
 	Errors  []struct {
 		Message string `xml:",chardata"`
 		Number  string `xml:"Number,attr"`
 	} `xml:"Errors>Error"`
 	CommandResponse struct {
 		DomainDNSGetListResult []string `xml:"DomainDNSGetListResult>Nameserver"`
-	} `sml:CommandResponse"`
+	} `xml:"CommandResponse"`
 }
 
 type NSSetCustomRepsonse struct {
-	XMLName xml.Name `xml:"ApiResponse`
+	XMLName xml.Name `xml:"ApiResponse"`
 	Errors  []struct {
 		Message string `xml:",chardata"`
 		Number  string `xml:"Number,attr"`
@@ -55,7 +55,7 @@ type NSSetCustomRepsonse struct {
 }
 
 type NSSetDefaultResponse struct {
-	XMLName xml.Name `xml:"ApiResponse`
+	XMLName xml.Name `xml:"ApiResponse"`
 	Errors  []struct {
 		Message string `xml:",chardata"`
 		Number  string `xml:"Number,attr"`

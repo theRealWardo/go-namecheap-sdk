@@ -31,7 +31,7 @@ func (c *Client) SetNS(domain string, servers []string) ([]string, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	err = decode(resp.Body, &ret)
+	err = c.decode(resp.Body, &ret)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +70,7 @@ func (c *Client) GetNS(domain string) ([]string, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	err = decode(resp.Body, &ret)
+	err = c.decode(resp.Body, &ret)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +94,7 @@ func (c *Client) ResetNS(domain string) error {
 		return err
 	}
 	defer resp.Body.Close()
-	err = decode(resp.Body, &ret)
+	err = c.decode(resp.Body, &ret)
 	if err != nil {
 		return err
 	}

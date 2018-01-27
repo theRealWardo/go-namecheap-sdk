@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestHost__todo(t *testing.T) {
+func TestHost__GetHosts(t *testing.T) {
 	if !clientEnabled {
 		t.Skip("namecheap credentials not configured")
 	}
