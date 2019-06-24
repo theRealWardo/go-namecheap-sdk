@@ -11,8 +11,9 @@ func TestDomain__GetDomains(t *testing.T) {
 	}
 
 	recs, err := testClient.GetDomains()
-	fmt.Printf("%v", recs)
-	fmt.Printf("%v", testClient)
+	for i := range recs {
+		fmt.Printf(" %#v\n", recs[i])
+	}
 
 	if err != nil {
 		t.Fatal(err)
