@@ -1,8 +1,16 @@
 sudo: false
 language: go
+
+env:
+  matrix:
+    - GO111MODULE=on
+
 go:
   - 1.11.x
   - 1.12.x
+
+before_script:
+  - go mod download
 
 script:
   - go get -u ./...
