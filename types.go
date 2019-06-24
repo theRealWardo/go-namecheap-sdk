@@ -5,6 +5,17 @@ import (
 	"fmt"
 )
 
+type DomainsResponse struct {
+	XMLName xml.Name `xml:"ApiResponse"`
+	Errors  []struct {
+		Message string `xml:",chardata"`
+		Number  string `xml:"Number,attr"`
+	} `xml:"Errors>Error"`
+	CommandResponse struct {
+		Domains []Domain `xml:"DomainGetListResult>Domain"`
+	} `xml:"CommandResponse"`
+}
+
 type RecordsResponse struct {
 	XMLName xml.Name `xml:"ApiResponse"`
 	Errors  []struct {
@@ -67,6 +78,13 @@ type NSSetDefaultResponse struct {
 			Updated bool   `xml:"Updated,attr"`
 		} `xml:"DomainDNSSetDefaultResult"`
 	} `xml:"CommandResponse"`
+}
+
+// Domain is used to represent a retrieved Domain. All properties
+// are set as strings.
+type Domain struct {
+	ID   string `xml:"ID,attr"`
+	Name string `xml:"Name,attr"`
 }
 
 // Record is used to represent a retrieved Record. All properties
