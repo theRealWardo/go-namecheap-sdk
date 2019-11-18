@@ -14,8 +14,7 @@ const (
 
 var (
 	allowedRecordTypes = []string{
-		// TODO(adam): CAA?
-		"A", "AAAA", "CNAME", "MX", "MXE", "TXT", "URL", "URL301", "FRAME",
+		"A", "AAAA", "ALIAS", "CAA", "CNAME", "MX", "MXE", "TXT", "URL", "URL301", "FRAME",
 	}
 )
 
