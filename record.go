@@ -3,7 +3,8 @@ package namecheap
 import (
 	"bytes"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/hashcode"
+
+	"github.com/hashicorp/terraform-plugin-sdk/helper/hashcode"
 )
 
 func (c *Client) AddRecord(domain string, record *Record) (*Record, error) {
