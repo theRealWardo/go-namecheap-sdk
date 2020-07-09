@@ -14,7 +14,7 @@ const (
 
 var (
 	allowedRecordTypes = []string{
-		"A", "AAAA", "ALIAS", "CAA", "CNAME", "MX", "MXE", "TXT", "URL", "URL301", "FRAME",
+		"A", "AAAA", "ALIAS", "CAA", "CNAME", "MX", "MXE", "NS", "TXT", "URL", "URL301", "FRAME",
 	}
 )
 
