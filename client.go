@@ -90,19 +90,15 @@ func (c *Client) NewRequest(body map[string]string) (*http.Request, error) {
 		return nil, fmt.Errorf("Error parsing base URL: %s", err)
 	}
 
-	debugBody := c.encodeBody(body)
-
-	if debug {
-		fmt.Printf("DEBUG: %q\n", string(debugBody))
-	}
-
 	body["Username"] = c.Username
 	body["ApiKey"] = c.Token
 	body["ApiUser"] = c.ApiUser
 	body["ClientIp"] = c.Ip
 
 	rBody := c.encodeBody(body)
-
+	if debug {
+		fmt.Printf("DEBUG: %q\n", string(rBody))
+	}
 	if err != nil {
 		return nil, fmt.Errorf("Error encoding request body: %s", err)
 	}
