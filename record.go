@@ -3,8 +3,6 @@ package namecheap
 import (
 	"bytes"
 	"fmt"
-
-	"github.com/hashicorp/terraform-plugin-sdk/helper/hashcode"
 )
 
 func (c *Client) AddRecord(domain string, record *Record) (*Record, error) {
@@ -68,7 +66,7 @@ func (c *Client) CreateHash(record *Record) int {
 	buf.WriteString(fmt.Sprintf(record.Name))
 	buf.WriteString(fmt.Sprintf(record.RecordType))
 	buf.WriteString(fmt.Sprintf(record.Address))
-	return hashcode.String(buf.String())
+	return HashString(buf.String())
 }
 
 func (c *Client) FindRecordByHash(hashId int, records []Record) (*Record, error) {

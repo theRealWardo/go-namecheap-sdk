@@ -96,7 +96,9 @@ func (c *Client) NewRequest(body map[string]string) (*http.Request, error) {
 	body["ClientIp"] = c.Ip
 
 	rBody := c.encodeBody(body)
-
+	if debug {
+		fmt.Printf("DEBUG: %q\n", string(rBody))
+	}
 	if err != nil {
 		return nil, fmt.Errorf("Error encoding request body: %s", err)
 	}
