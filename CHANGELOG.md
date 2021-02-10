@@ -1,3 +1,15 @@
+## v1.2.0 (Released 2021-02-10)
+
+ADDITIONS
+
+- Add NS record
+- Add debug log to new request
+
+IMPROVEMENTS
+
+- Remove dependency on terraform sdk
+- Update travis config to use golang 1.15
+
 ## v1.1.0 (Released 2019-11-19)
 
 ADDITIONS
