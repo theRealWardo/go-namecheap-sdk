@@ -26,8 +26,8 @@ client, err := namecheap.NewClient(username, apiuser string, token string, ip st
 
 Calling `namecheap.New()` reads the following environment variables:
 
-- `NAMECHEAP_USERNAME`: Username: e.g. adamdecaf
-- `NAMECHEAP_API_USER`: ApiUser: e.g. adamdecaf
+- `NAMECHEAP_USERNAME`: Username: e.g. john
+- `NAMECHEAP_API_USER`: ApiUser: e.g. john
 - `NAMECHEAP_TOKEN`: From https://ap.www.namecheap.com/Profile/Tools/ApiAccess
 - `NAMECHEAP_IP`: Your IP (must be whitelisted)
 - `NAMECHEAP_USE_SANDBOX`: Use sandbox environment
