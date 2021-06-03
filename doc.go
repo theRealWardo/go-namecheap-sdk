@@ -10,8 +10,8 @@
 //
 // The following environmental variables are supported:
 //
-//     NAMECHEAP_USERNAME        Username: e.g. john
-//     NAMECHEAP_API_USER        ApiUser: e.g. john
+//     NAMECHEAP_USERNAME        Username: e.g. adamdecaf
+//     NAMECHEAP_API_USER        ApiUser: e.g. adamdecaf
 //     NAMECHEAP_TOKEN           From https://ap.www.namecheap.com/Profile/Tools/ApiAccess
 //     NAMECHEAP_IP              Your IP (must be whitelisted)
 //     NAMECHEAP_USE_SANDBOX     Use sandbox environment
