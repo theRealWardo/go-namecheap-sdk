@@ -1,9 +1,9 @@
-// namecheap - Golang client for Namecheap's API
+// Package namecheap - Golang client for Namecheap's API
 //
 // To use this project you'll need to either pull down the source
 // or vendor it into your project.
 //
-// Once added to your project there are two ways to contruct a Client
+// Once added to your project there are two ways to construct a Client
 //
 //     namecheap.New() // reads environmental variables
 //     namecheap.NewClient(username, apiuser string, token string, ip string, useSandbox)
