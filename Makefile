@@ -1,14 +1,15 @@
-.PHONY: test vet
+default: format check lint test
+
+format:
+	go fmt ./...
 
 check:
 	go vet ./...
-	go fmt ./...
 
-test: check
+test:
 	go test -v ./...
 
-build: check
-	go build github.com/namecheap/go-namecheap-sdk
-
-deps:
-	dep ensure
+# Make sure you have installed golangci-lint CLI
+# https://golangci-lint.run/usage/install/#local-installation
+lint:
+	golangci-lint run
