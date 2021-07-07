@@ -82,7 +82,7 @@ func TestDomainsDNSSetHosts(t *testing.T) {
 		assert.Equal(t, "issue", sentBody.Get("Tag"))
 	})
 
-	t.Run("request_data_correct_records_mapping", func(t *testing.T) {
+	t.Run("request_data_correct_mx_records_mapping", func(t *testing.T) {
 		var sentBody url.Values
 
 		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
@@ -97,7 +97,8 @@ func TestDomainsDNSSetHosts(t *testing.T) {
 		client.BaseURL = mockServer.URL
 
 		_, err := client.DomainsDNS.SetHosts(&DomainsDNSSetHostsArgs{
-			Domain: String("domain.net"),
+			Domain:    String("domain.net"),
+			EmailType: String("MX"),
 			Records: &[]DomainsDNSHostRecord{
 				{
 					RecordType: String("A"),
@@ -128,6 +129,176 @@ func TestDomainsDNSSetHosts(t *testing.T) {
 		assert.Equal(t, "super-mail.com", sentBody.Get("Address2"))
 		assert.Equal(t, "1800", sentBody.Get("TTL2"))
 		assert.Equal(t, "10", sentBody.Get("MXPref2"))
+	})
+
+	t.Run("request_data_correct_mxe_records_mapping", func(t *testing.T) {
+		var sentBody url.Values
+
+		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+			body, _ := ioutil.ReadAll(request.Body)
+			query, _ := url.ParseQuery(string(body))
+			sentBody = query
+			_, _ = writer.Write([]byte(fakeResponse))
+		}))
+		defer mockServer.Close()
+
+		client := setupClient(nil)
+		client.BaseURL = mockServer.URL
+
+		_, err := client.DomainsDNS.SetHosts(&DomainsDNSSetHostsArgs{
+			Domain:    String("domain.net"),
+			EmailType: String("MXE"),
+			Records: &[]DomainsDNSHostRecord{
+				{
+					RecordType: String("MXE"),
+					HostName:   String("mail"),
+					Address:    String("10.11.12.13"),
+					TTL:        Int(1800),
+					MXPref:     UInt8(10),
+				},
+			},
+		})
+		if err != nil {
+			t.Fatal("Unable to get domains", err)
+		}
+
+		assert.Equal(t, "MXE", sentBody.Get("RecordType1"))
+		assert.Equal(t, "mail", sentBody.Get("HostName1"))
+		assert.Equal(t, "10.11.12.13", sentBody.Get("Address1"))
+		assert.Equal(t, "1800", sentBody.Get("TTL1"))
+		assert.Equal(t, "10", sentBody.Get("MXPref1"))
+	})
+
+	t.Run("request_data_correct_url_record", func(t *testing.T) {
+		var sentBody url.Values
+
+		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+			body, _ := ioutil.ReadAll(request.Body)
+			query, _ := url.ParseQuery(string(body))
+			sentBody = query
+			_, _ = writer.Write([]byte(fakeResponse))
+		}))
+		defer mockServer.Close()
+
+		client := setupClient(nil)
+		client.BaseURL = mockServer.URL
+
+		_, err := client.DomainsDNS.SetHosts(&DomainsDNSSetHostsArgs{
+			Domain: String("domain.net"),
+			Records: &[]DomainsDNSHostRecord{
+				{
+					RecordType: String("URL"),
+					HostName:   String("redirect"),
+					Address:    String("https://domain.com"),
+				},
+			},
+		})
+		if err != nil {
+			t.Fatal("Unable to get domains", err)
+		}
+
+		assert.Equal(t, "URL", sentBody.Get("RecordType1"))
+		assert.Equal(t, "redirect", sentBody.Get("HostName1"))
+		assert.Equal(t, "https://domain.com", sentBody.Get("Address1"))
+	})
+
+	t.Run("request_data_correct_url301_record", func(t *testing.T) {
+		var sentBody url.Values
+
+		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+			body, _ := ioutil.ReadAll(request.Body)
+			query, _ := url.ParseQuery(string(body))
+			sentBody = query
+			_, _ = writer.Write([]byte(fakeResponse))
+		}))
+		defer mockServer.Close()
+
+		client := setupClient(nil)
+		client.BaseURL = mockServer.URL
+
+		_, err := client.DomainsDNS.SetHosts(&DomainsDNSSetHostsArgs{
+			Domain: String("domain.net"),
+			Records: &[]DomainsDNSHostRecord{
+				{
+					RecordType: String("URL301"),
+					HostName:   String("redirect"),
+					Address:    String("https://domain.com"),
+				},
+			},
+		})
+		if err != nil {
+			t.Fatal("Unable to get domains", err)
+		}
+
+		assert.Equal(t, "URL301", sentBody.Get("RecordType1"))
+		assert.Equal(t, "redirect", sentBody.Get("HostName1"))
+		assert.Equal(t, "https://domain.com", sentBody.Get("Address1"))
+	})
+
+	t.Run("request_data_correct_frame_record", func(t *testing.T) {
+		var sentBody url.Values
+
+		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+			body, _ := ioutil.ReadAll(request.Body)
+			query, _ := url.ParseQuery(string(body))
+			sentBody = query
+			_, _ = writer.Write([]byte(fakeResponse))
+		}))
+		defer mockServer.Close()
+
+		client := setupClient(nil)
+		client.BaseURL = mockServer.URL
+
+		_, err := client.DomainsDNS.SetHosts(&DomainsDNSSetHostsArgs{
+			Domain: String("domain.net"),
+			Records: &[]DomainsDNSHostRecord{
+				{
+					RecordType: String("FRAME"),
+					HostName:   String("redirect"),
+					Address:    String("https://domain.com"),
+				},
+			},
+		})
+		if err != nil {
+			t.Fatal("Unable to get domains", err)
+		}
+
+		assert.Equal(t, "FRAME", sentBody.Get("RecordType1"))
+		assert.Equal(t, "redirect", sentBody.Get("HostName1"))
+		assert.Equal(t, "https://domain.com", sentBody.Get("Address1"))
+	})
+
+	t.Run("request_data_correct_CAA_iodef_record", func(t *testing.T) {
+		var sentBody url.Values
+
+		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+			body, _ := ioutil.ReadAll(request.Body)
+			query, _ := url.ParseQuery(string(body))
+			sentBody = query
+			_, _ = writer.Write([]byte(fakeResponse))
+		}))
+		defer mockServer.Close()
+
+		client := setupClient(nil)
+		client.BaseURL = mockServer.URL
+
+		_, err := client.DomainsDNS.SetHosts(&DomainsDNSSetHostsArgs{
+			Domain: String("domain.net"),
+			Records: &[]DomainsDNSHostRecord{
+				{
+					RecordType: String("CAA"),
+					HostName:   String("@"),
+					Address:    String("0 iodef http://domain.com"),
+				},
+			},
+		})
+		if err != nil {
+			t.Fatal("Unable to get domains", err)
+		}
+
+		assert.Equal(t, "CAA", sentBody.Get("RecordType1"))
+		assert.Equal(t, "@", sentBody.Get("HostName1"))
+		assert.Equal(t, "0 iodef http://domain.com", sentBody.Get("Address1"))
 	})
 
 	var errorCases = []struct {
@@ -217,6 +388,133 @@ func TestDomainsDNSSetHosts(t *testing.T) {
 				},
 			},
 			ExpectedError: "Records[0].Address is required",
+		},
+		{
+			Name: "request_data_error_email_type_mx_without_records",
+			Args: &DomainsDNSSetHostsArgs{
+				EmailType: String("MX"),
+				Domain:    String("domain.net"),
+				Records: &[]DomainsDNSHostRecord{
+					{RecordType: String("CNAME"), HostName: String("@"), Address: String("domain.com"), TTL: Int(1800)},
+				},
+			},
+			ExpectedError: "minimum 1 MX record required for MX EmailType",
+		},
+		{
+			Name: "request_data_error_email_type_mxe_without_record",
+			Args: &DomainsDNSSetHostsArgs{
+				EmailType: String("MXE"),
+				Domain:    String("domain.net"),
+				Records: &[]DomainsDNSHostRecord{
+					{RecordType: String("CNAME"), HostName: String("@"), Address: String("domain.com"), TTL: Int(1800)},
+				},
+			},
+			ExpectedError: "one MXE record required for MXE EmailType",
+		},
+		{
+			Name: "request_data_error_email_type_nil_with_mx",
+			Args: &DomainsDNSSetHostsArgs{
+				Domain: String("domain.net"),
+				Records: &[]DomainsDNSHostRecord{
+					{RecordType: String("MX"), HostName: String("mail"), Address: String("mail.domain.com"), MXPref: UInt8(10)},
+				},
+			},
+			ExpectedError: "Records[0].RecordType MX is not allowed for EmailType=nil",
+		},
+		{
+			Name: "request_data_error_email_type_fwd_with_mx",
+			Args: &DomainsDNSSetHostsArgs{
+				Domain:    String("domain.net"),
+				EmailType: String("FWD"),
+				Records: &[]DomainsDNSHostRecord{
+					{RecordType: String("MX"), HostName: String("mail"), Address: String("mail.domain.com"), MXPref: UInt8(10)},
+				},
+			},
+			ExpectedError: "Records[0].RecordType MX is not allowed for EmailType=FWD",
+		},
+		{
+			Name: "request_data_error_email_type_nil_with_mxe",
+			Args: &DomainsDNSSetHostsArgs{
+				Domain: String("domain.net"),
+				Records: &[]DomainsDNSHostRecord{
+					{RecordType: String("MXE"), HostName: String("mail"), Address: String("10.11.12.13")},
+				},
+			},
+			ExpectedError: "Records[0].RecordType MXE is not allowed for EmailType=nil",
+		},
+		{
+			Name: "request_data_error_email_type_fwd_with_mxe",
+			Args: &DomainsDNSSetHostsArgs{
+				Domain:    String("domain.net"),
+				EmailType: String("FWD"),
+				Records: &[]DomainsDNSHostRecord{
+					{RecordType: String("MXE"), HostName: String("mail"), Address: String("10.11.12.13")},
+				},
+			},
+			ExpectedError: "Records[0].RecordType MXE is not allowed for EmailType=FWD",
+		},
+		{
+			Name: "request_data_error_two_mxe_records",
+			Args: &DomainsDNSSetHostsArgs{
+				Domain:    String("domain.net"),
+				EmailType: String("MXE"),
+				Records: &[]DomainsDNSHostRecord{
+					{RecordType: String("MXE"), HostName: String("mail"), Address: String("10.11.12.13")},
+					{RecordType: String("MXE"), HostName: String("mail2"), Address: String("10.11.12.14")},
+				},
+			},
+			ExpectedError: "one MXE record required for MXE EmailType",
+		},
+		{
+			Name: "request_data_error_no_mxpref_for_mx_record",
+			Args: &DomainsDNSSetHostsArgs{
+				Domain:    String("domain.net"),
+				EmailType: String("MX"),
+				Records: &[]DomainsDNSHostRecord{
+					{RecordType: String("MX"), HostName: String("mail"), Address: String("mail.domain.com")},
+				},
+			},
+			ExpectedError: "Records[0].MXPref is nil but required for MX record type",
+		},
+		{
+			Name: "request_data_error_no_protocol_prefix_for_url_record",
+			Args: &DomainsDNSSetHostsArgs{
+				Domain: String("domain.net"),
+				Records: &[]DomainsDNSHostRecord{
+					{RecordType: String("URL"), HostName: String("mail"), Address: String("domain.com")},
+				},
+			},
+			ExpectedError: `Records[0].Address "domain.com" must contain a protocol prefix for URL record`,
+		},
+		{
+			Name: "request_data_error_no_protocol_prefix_for_url301_record",
+			Args: &DomainsDNSSetHostsArgs{
+				Domain: String("domain.net"),
+				Records: &[]DomainsDNSHostRecord{
+					{RecordType: String("URL301"), HostName: String("mail"), Address: String("domain.com")},
+				},
+			},
+			ExpectedError: `Records[0].Address "domain.com" must contain a protocol prefix for URL301 record`,
+		},
+		{
+			Name: "request_data_error_no_protocol_prefix_for_frame_record",
+			Args: &DomainsDNSSetHostsArgs{
+				Domain: String("domain.net"),
+				Records: &[]DomainsDNSHostRecord{
+					{RecordType: String("FRAME"), HostName: String("mail"), Address: String("domain.com")},
+				},
+			},
+			ExpectedError: `Records[0].Address "domain.com" must contain a protocol prefix for FRAME record`,
+		},
+		{
+			Name: "request_data_error_no_protocol_prefix_for_caa_iodef_record",
+			Args: &DomainsDNSSetHostsArgs{
+				Domain: String("domain.net"),
+				Records: &[]DomainsDNSHostRecord{
+					{RecordType: String("CAA"), HostName: String("@"), Address: String("0 iodef domain.com")},
+				},
+			},
+			ExpectedError: `Records[0].Address "0 iodef domain.com" must contain a protocol prefix for CAA iodef record`,
 		},
 	}
 

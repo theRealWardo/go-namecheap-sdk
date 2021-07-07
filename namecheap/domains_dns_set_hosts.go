@@ -3,7 +3,9 @@ package namecheap
 import (
 	"encoding/xml"
 	"fmt"
+	"regexp"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -14,6 +16,7 @@ const (
 var allowedRecordTypes = []string{"A", "AAAA", "ALIAS", "CAA", "CNAME", "MX", "MXE", "NS", "TXT", "URL", "URL301", "FRAME"}
 var allowedEmailTypeValues = []string{"NONE", "MXE", "MX", "FWD", "OX"}
 var allowedTagValues = []string{"issue", "issuewild", "iodef"}
+var validURLProtocolPrefix = regexp.MustCompile("[a-z]+://")
 
 type DomainsDNSHostRecord struct {
 	// Sub-domain/hostname to create the record for
@@ -82,6 +85,12 @@ func (dds DomainsDNSService) SetHosts(args *DomainsDNSSetHostsArgs) (*DomainsDNS
 		"Command": "namecheap.domains.dns.setHosts",
 	}
 
+	// validate input arguments
+	err := validateDomainsDNSSetHostsArgs(args)
+	if err != nil {
+		return nil, err
+	}
+
 	// parse input arguments
 	parsedArgsMap, err := parseDomainsDNSSetHostsArgs(args)
 	if err != nil {
@@ -114,6 +123,81 @@ func (dds DomainsDNSService) SetHosts(args *DomainsDNSSetHostsArgs) (*DomainsDNS
 	return response.CommandResponse, nil
 }
 
+func validateDomainsDNSSetHostsArgs(args *DomainsDNSSetHostsArgs) error {
+	if args.EmailType != nil && !isValidEmailType(*args.EmailType) {
+		return fmt.Errorf("invalid EmailType value: %s", *args.EmailType)
+	}
+
+	if args.Tag != nil && !isValidTagValue(*args.Tag) {
+		return fmt.Errorf("invalid Tag value: %s", *args.Tag)
+	}
+
+	mxRecordsCount := 0
+	mxeRecordsCount := 0
+
+	if args.Records != nil {
+		for i, record := range *args.Records {
+			if record.RecordType == nil {
+				return fmt.Errorf("Records[%d].RecordType is required", i)
+			}
+			if !isValidRecordType(*record.RecordType) {
+				return fmt.Errorf("invalid Records[%d].RecordType value: %s", i, *record.RecordType)
+			}
+
+			if record.HostName == nil {
+				return fmt.Errorf("Records[%d].HostName is required", i)
+			}
+
+			if record.Address == nil {
+				return fmt.Errorf("Records[%d].Address is required", i)
+			}
+
+			if record.TTL != nil && (*record.TTL < minTTL || *record.TTL > maxTTL) {
+				return fmt.Errorf("invalid Records[%d].TTL value: %d", i, *record.TTL)
+			}
+
+			if *record.RecordType == "MX" {
+				if record.MXPref == nil {
+					return fmt.Errorf("Records[%d].MXPref is nil but required for MX record type", i)
+				}
+				if args.EmailType == nil {
+					return fmt.Errorf("Records[%d].RecordType MX is not allowed for EmailType=nil", i)
+				} else if *args.EmailType != "MX" {
+					return fmt.Errorf("Records[%d].RecordType MX is not allowed for EmailType=%s", i, *args.EmailType)
+				}
+				mxRecordsCount++
+			} else if *record.RecordType == "MXE" {
+				if args.EmailType == nil {
+					return fmt.Errorf("Records[%d].RecordType MXE is not allowed for EmailType=nil", i)
+				} else if *args.EmailType != "MXE" {
+					return fmt.Errorf("Records[%d].RecordType MXE is not allowed for EmailType=%s", i, *args.EmailType)
+				}
+				mxeRecordsCount++
+			} else if *record.RecordType == "URL" || *record.RecordType == "URL301" || *record.RecordType == "FRAME" {
+				if !validURLProtocolPrefix.MatchString(*record.Address) {
+					return fmt.Errorf(`Records[%d].Address "%s" must contain a protocol prefix for %s record`, i, *record.Address, *record.RecordType)
+				}
+			} else if *record.RecordType == "CAA" {
+				if strings.Contains(*record.Address, "iodef") && !validURLProtocolPrefix.MatchString(*record.Address) {
+					return fmt.Errorf(`Records[%d].Address "%s" must contain a protocol prefix for %s iodef record`, i, *record.Address, *record.RecordType)
+				}
+			}
+		}
+	}
+
+	if args.EmailType != nil {
+		if *args.EmailType == "MXE" && mxeRecordsCount != 1 {
+			return fmt.Errorf("one MXE record required for MXE EmailType")
+		}
+
+		if *args.EmailType == "MX" && mxRecordsCount == 0 {
+			return fmt.Errorf("minimum 1 MX record required for MX EmailType")
+		}
+	}
+
+	return nil
+}
+
 func parseDomainsDNSSetHostsArgs(args *DomainsDNSSetHostsArgs) (*map[string]string, error) {
 	params := map[string]string{}
 
@@ -126,11 +210,7 @@ func parseDomainsDNSSetHostsArgs(args *DomainsDNSSetHostsArgs) (*map[string]stri
 	params["TLD"] = parsedDomain.TLD
 
 	if args.EmailType != nil {
-		if isValidEmailType(*args.EmailType) {
-			params["EmailType"] = *args.EmailType
-		} else {
-			return nil, fmt.Errorf("invalid EmailType value: %s", *args.EmailType)
-		}
+		params["EmailType"] = *args.EmailType
 	}
 
 	if args.Flag != nil {
@@ -138,45 +218,25 @@ func parseDomainsDNSSetHostsArgs(args *DomainsDNSSetHostsArgs) (*map[string]stri
 	}
 
 	if args.Tag != nil {
-		if isValidTagValue(*args.Tag) {
-			params["Tag"] = *args.Tag
-		} else {
-			return nil, fmt.Errorf("invalid Tag value: %s", *args.Tag)
-		}
+		params["Tag"] = *args.Tag
 	}
 
 	if args.Records != nil {
 		for i, record := range *args.Records {
 			recordIndexString := strconv.Itoa(i + 1)
 
+			params["RecordType"+recordIndexString] = *record.RecordType
+
 			if record.HostName != nil {
 				params["HostName"+recordIndexString] = *record.HostName
-			} else {
-				return nil, fmt.Errorf("Records[%d].HostName is required", i)
-			}
-
-			if record.RecordType == nil {
-				return nil, fmt.Errorf("Records[%d].RecordType is required", i)
-			}
-
-			if isValidRecordType(*record.RecordType) {
-				params["RecordType"+recordIndexString] = *record.RecordType
-			} else {
-				return nil, fmt.Errorf("invalid Records[%d].RecordType value: %s", i, *record.RecordType)
 			}
 
 			if record.TTL != nil {
-				if *record.TTL >= minTTL && *record.TTL <= maxTTL {
-					params["TTL"+recordIndexString] = strconv.Itoa(*record.TTL)
-				} else {
-					return nil, fmt.Errorf("invalid Records[%d].TTL value: %d", i, *record.TTL)
-				}
+				params["TTL"+recordIndexString] = strconv.Itoa(*record.TTL)
 			}
 
 			if record.Address != nil {
 				params["Address"+recordIndexString] = *record.Address
-			} else {
-				return nil, fmt.Errorf("Records[%d].Address is required", i)
 			}
 
 			if record.MXPref != nil {
