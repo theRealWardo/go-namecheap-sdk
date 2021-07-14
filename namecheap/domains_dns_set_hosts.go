@@ -9,12 +9,33 @@ import (
 )
 
 const (
-	minTTL int = 60
-	maxTTL int = 60000
+	MinTTL int = 60
+	MaxTTL int = 60000
+
+	EmailTypeNone    = "NONE"
+	EmailTypeMXE     = "MXE"
+	EmailTypeMX      = "MX"
+	EmailTypeForward = "FWD"
+	EmailTypePrivate = "OX"
+	EmailTypeGmail   = "GMAIL"
+
+	RecordTypeA      = "A"
+	RecordTypeAAAA   = "AAAA"
+	RecordTypeAlias  = "ALIAS"
+	RecordTypeCAA    = "CAA"
+	RecordTypeCNAME  = "CNAME"
+	RecordTypeMX     = "MX"
+	RecordTypeMXE    = "MXE"
+	RecordTypeNS     = "NS"
+	RecordTypeTXT    = "TXT"
+	RecordTypeURL    = "URL"
+	RecordTypeURL301 = "URL301"
+	RecordTypeFrame  = "FRAME"
 )
 
-var allowedRecordTypes = []string{"A", "AAAA", "ALIAS", "CAA", "CNAME", "MX", "MXE", "NS", "TXT", "URL", "URL301", "FRAME"}
-var allowedEmailTypeValues = []string{"NONE", "MXE", "MX", "FWD", "OX", "GMAIL"}
+var AllowedRecordTypeValues = []string{RecordTypeA, RecordTypeAAAA, RecordTypeAlias, RecordTypeCAA, RecordTypeCNAME, RecordTypeMX, RecordTypeMXE, RecordTypeNS, RecordTypeTXT, RecordTypeURL, RecordTypeURL301, RecordTypeFrame}
+var AllowedEmailTypeValues = []string{EmailTypeNone, EmailTypeMXE, EmailTypeMX, EmailTypeForward, EmailTypePrivate, EmailTypeGmail}
+
 var allowedTagValues = []string{"issue", "issuewild", "iodef"}
 var validURLProtocolPrefix = regexp.MustCompile("[a-z]+://")
 
@@ -153,7 +174,7 @@ func validateDomainsDNSSetHostsArgs(args *DomainsDNSSetHostsArgs) error {
 				return fmt.Errorf("Records[%d].Address is required", i)
 			}
 
-			if record.TTL != nil && (*record.TTL < minTTL || *record.TTL > maxTTL) {
+			if record.TTL != nil && (*record.TTL < MinTTL || *record.TTL > MaxTTL) {
 				return fmt.Errorf("invalid Records[%d].TTL value: %d", i, *record.TTL)
 			}
 
@@ -251,7 +272,7 @@ func parseDomainsDNSSetHostsArgs(args *DomainsDNSSetHostsArgs) (*map[string]stri
 }
 
 func isValidEmailType(emailType string) bool {
-	for _, value := range allowedEmailTypeValues {
+	for _, value := range AllowedEmailTypeValues {
 		if emailType == value {
 			return true
 		}
@@ -269,7 +290,7 @@ func isValidTagValue(tag string) bool {
 }
 
 func isValidRecordType(recordType string) bool {
-	for _, value := range allowedRecordTypes {
+	for _, value := range AllowedRecordTypeValues {
 		if recordType == value {
 			return true
 		}
