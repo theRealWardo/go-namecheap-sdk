@@ -14,7 +14,7 @@ const (
 )
 
 var allowedRecordTypes = []string{"A", "AAAA", "ALIAS", "CAA", "CNAME", "MX", "MXE", "NS", "TXT", "URL", "URL301", "FRAME"}
-var allowedEmailTypeValues = []string{"NONE", "MXE", "MX", "FWD", "OX"}
+var allowedEmailTypeValues = []string{"NONE", "MXE", "MX", "FWD", "OX", "GMAIL"}
 var allowedTagValues = []string{"issue", "issuewild", "iodef"}
 var validURLProtocolPrefix = regexp.MustCompile("[a-z]+://")
 
@@ -37,8 +37,9 @@ type DomainsDNSSetHostsArgs struct {
 	Domain *string
 	// DomainsDNSHostRecord list
 	Records *[]DomainsDNSHostRecord
-	// Possible values are MXE, MX, FWD, OX or NONE
+	// Possible values are MXE, MX, FWD, OX, GMAIL or NONE
 	// If empty, then this field won't be forwarded
+	// Follow https://www.namecheap.com/support/knowledgebase/article.aspx/322/2237/how-can-i-set-up-mx-records-required-for-mail-service/ to read more about email types
 	EmailType *string
 	// Is an unsigned integer between 0 and 255.
 	// The flag value is an 8-bit number, the most significant bit of which indicates the criticality of understanding of a record by a CA.
