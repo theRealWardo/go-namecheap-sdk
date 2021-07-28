@@ -54,16 +54,7 @@ func (dds *DomainsDNSService) SetCustom(domain string, nameservers []string) (*D
 
 	params["Nameservers"] = *nameserversString
 
-	req, err := dds.client.NewRequest(params)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := dds.client.http.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	err = decodeBody(resp.Body, &response)
+	_, err = dds.client.DoXML(params, &response)
 	if err != nil {
 		return nil, err
 	}

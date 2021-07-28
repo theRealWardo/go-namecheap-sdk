@@ -88,9 +88,8 @@ type DomainsDNSSetHostsCommandResponse struct {
 }
 
 type DomainDNSSetHostsResult struct {
-	Domain *string `xml:"Domain,attr"`
-	//EmailType *string `xml:"EmailType,attr"`
-	IsSuccess *bool `xml:"IsSuccess,attr"`
+	Domain    *string `xml:"Domain,attr"`
+	IsSuccess *bool   `xml:"IsSuccess,attr"`
 }
 
 func (d DomainDNSSetHostsResult) String() string {
@@ -124,16 +123,7 @@ func (dds DomainsDNSService) SetHosts(args *DomainsDNSSetHostsArgs) (*DomainsDNS
 		params[k] = v
 	}
 
-	req, err := dds.client.NewRequest(params)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := dds.client.http.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	err = decodeBody(resp.Body, &response)
+	_, err = dds.client.DoXML(params, &response)
 	if err != nil {
 		return nil, err
 	}

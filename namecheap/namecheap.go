@@ -3,8 +3,10 @@ package namecheap
 import (
 	"bytes"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"github.com/hashicorp/go-cleanhttp"
+	"github.com/namecheap/go-namecheap-sdk/v2/namecheap/internal/syncretry"
 	"github.com/weppos/publicsuffix-go/publicsuffix"
 	"io"
 	"net/http"
@@ -29,6 +31,7 @@ type ClientOptions struct {
 type Client struct {
 	http   *http.Client
 	common service
+	sr     *syncretry.SyncRetry
 
 	ClientOptions *ClientOptions
 	BaseURL       string
@@ -46,6 +49,7 @@ func NewClient(options *ClientOptions) *Client {
 	client := &Client{
 		ClientOptions: options,
 		http:          cleanhttp.DefaultClient(),
+		sr:            syncretry.NewSyncRetry(&syncretry.Options{Delays: []int{1, 5, 15, 30, 50}}),
 	}
 
 	if options.UseSandbox {
@@ -87,6 +91,37 @@ func (c *Client) NewRequest(body map[string]string) (*http.Request, error) {
 	req.Header.Add("Content-Length", strconv.Itoa(len(rBody)))
 
 	return req, nil
+}
+
+func (c *Client) DoXML(body map[string]string, obj interface{}) (*http.Response, error) {
+	var requestResponse *http.Response
+	err := c.sr.Do(func() error {
+		request, err := c.NewRequest(body)
+		if err != nil {
+			return err
+		}
+
+		response, err := c.http.Do(request)
+		if err != nil {
+			return err
+		}
+
+		if response.StatusCode == 405 {
+			return syncretry.RetryError
+		}
+
+		requestResponse = response
+		defer response.Body.Close()
+
+		err = decodeBody(response.Body, obj)
+		return err
+	})
+
+	if err != nil && errors.Is(err, syncretry.RetryAttemptsError) {
+		return nil, fmt.Errorf("API retry limit exceeded")
+	}
+
+	return requestResponse, err
 }
 
 // decodeBody decodes the interface from received XML
