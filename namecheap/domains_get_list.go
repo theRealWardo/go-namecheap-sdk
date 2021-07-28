@@ -89,16 +89,7 @@ func (ds *DomainsService) GetList(args *DomainsGetListArgs) (*DomainsGetListComm
 		params[k] = v
 	}
 
-	req, err := ds.client.NewRequest(params)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := ds.client.http.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	err = decodeBody(resp.Body, &domainsResponse)
+	_, err = ds.client.DoXML(params, &domainsResponse)
 	if err != nil {
 		return nil, err
 	}

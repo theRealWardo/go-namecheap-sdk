@@ -50,16 +50,7 @@ func (dds *DomainsDNSService) GetList(domain string) (*DomainsDNSGetListCommandR
 	params["SLD"] = parsedDomain.SLD
 	params["TLD"] = parsedDomain.TLD
 
-	req, err := dds.client.NewRequest(params)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := dds.client.http.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	err = decodeBody(resp.Body, &response)
+	_, err = dds.client.DoXML(params, &response)
 	if err != nil {
 		return nil, err
 	}
