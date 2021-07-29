@@ -7,7 +7,7 @@ check:
 	go vet ./...
 
 test:
-	go test -v ./...
+	go test -v ./... -cover -count=1
 
 # Make sure you have installed golangci-lint CLI
 # https://golangci-lint.run/usage/install/#local-installation
