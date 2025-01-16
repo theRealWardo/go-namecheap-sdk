@@ -1,12 +1,13 @@
 package namecheap
 
 import (
-	"github.com/stretchr/testify/assert"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDomainsDNSGetList(t *testing.T) {
@@ -30,7 +31,7 @@ func TestDomainsDNSGetList(t *testing.T) {
 		var sentBody url.Values
 
 		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-			body, _ := ioutil.ReadAll(request.Body)
+			body, _ := io.ReadAll(request.Body)
 			query, _ := url.ParseQuery(string(body))
 			sentBody = query
 			_, _ = writer.Write([]byte(fakeResponse))
@@ -52,7 +53,7 @@ func TestDomainsDNSGetList(t *testing.T) {
 		var sentBody url.Values
 
 		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-			body, _ := ioutil.ReadAll(request.Body)
+			body, _ := io.ReadAll(request.Body)
 			query, _ := url.ParseQuery(string(body))
 			sentBody = query
 			_, _ = writer.Write([]byte(fakeResponse))
@@ -72,7 +73,7 @@ func TestDomainsDNSGetList(t *testing.T) {
 	})
 
 	t.Run("correct_parsing_result_attributes", func(t *testing.T) {
-		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, _ *http.Request) {
 			_, _ = writer.Write([]byte(fakeResponse))
 		}))
 		defer mockServer.Close()
@@ -92,7 +93,7 @@ func TestDomainsDNSGetList(t *testing.T) {
 	})
 
 	t.Run("correct_parsing_list", func(t *testing.T) {
-		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, _ *http.Request) {
 			_, _ = writer.Write([]byte(fakeResponse))
 		}))
 		defer mockServer.Close()
@@ -124,7 +125,7 @@ func TestDomainsDNSGetList(t *testing.T) {
 			<ExecutionTime>0.565</ExecutionTime>
 		</ApiResponse>`
 
-		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, _ *http.Request) {
 			_, _ = writer.Write([]byte(fakeLocalResponse))
 		}))
 		defer mockServer.Close()
@@ -141,7 +142,7 @@ func TestDomainsDNSGetList(t *testing.T) {
 	})
 
 	t.Run("FreeDNS domain handling", func(t *testing.T) {
-		fakeDnsGetListResponse := `
+		fakeDNSGetListResponse := `
 			<?xml version="1.0" encoding="utf-8"?>
 			<ApiResponse Status="ERROR" xmlns="http://api.namecheap.com/xml.response">
 				<Errors>
@@ -193,10 +194,10 @@ func TestDomainsDNSGetList(t *testing.T) {
 		`
 
 		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-			body, _ := ioutil.ReadAll(request.Body)
+			body, _ := io.ReadAll(request.Body)
 			query, _ := url.ParseQuery(string(body))
 			if query.Get("Command") == "namecheap.domains.dns.getList" {
-				_, _ = writer.Write([]byte(fakeDnsGetListResponse))
+				_, _ = writer.Write([]byte(fakeDNSGetListResponse))
 			} else {
 				_, _ = writer.Write([]byte(fakeGetInfoResponse))
 			}

@@ -20,9 +20,9 @@ jobs:
         run: make check
 
       - name: Lint
-        uses: golangci/golangci-lint-action@v4
+        uses: golangci/golangci-lint-action@v6
         with:
-          version: v1.54
+          version: v1.60
 
       - name: Test
         run: make test

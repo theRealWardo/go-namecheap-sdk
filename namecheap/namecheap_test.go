@@ -1,27 +1,28 @@
 package namecheap
 
 import (
-	"github.com/stretchr/testify/assert"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 const (
 	ncUserName = "user"
-	ncApiUser  = "user"
-	ncApiKey   = "token"
-	ncClientIp = "10.10.10.10"
+	ncAPIUser  = "user"
+	ncAPIKey   = "token"
+	ncClientIP = "10.10.10.10"
 )
 
 func setupClient(httpClient *http.Client) *Client {
 	client := NewClient(&ClientOptions{
 		UserName:   ncUserName,
-		ApiUser:    ncApiUser,
-		ApiKey:     ncApiKey,
-		ClientIp:   ncClientIp,
+		ApiUser:    ncAPIUser,
+		ApiKey:     ncAPIKey,
+		ClientIp:   ncClientIP,
 		UseSandbox: false,
 	})
 
@@ -37,33 +38,33 @@ func TestNewClient(t *testing.T) {
 		client := setupClient(nil)
 
 		assert.Equal(t, client.ClientOptions.UserName, ncUserName)
-		assert.Equal(t, client.ClientOptions.ApiUser, ncApiUser)
-		assert.Equal(t, client.ClientOptions.ApiKey, ncApiKey)
-		assert.Equal(t, client.ClientOptions.ClientIp, ncClientIp)
+		assert.Equal(t, client.ClientOptions.ApiUser, ncAPIUser)
+		assert.Equal(t, client.ClientOptions.ApiKey, ncAPIKey)
+		assert.Equal(t, client.ClientOptions.ClientIp, ncClientIP)
 	})
 
 	t.Run("production_api_url", func(t *testing.T) {
 		client := NewClient(&ClientOptions{
 			UserName:   ncUserName,
-			ApiUser:    ncApiUser,
-			ApiKey:     ncApiKey,
-			ClientIp:   ncClientIp,
+			ApiUser:    ncAPIUser,
+			ApiKey:     ncAPIKey,
+			ClientIp:   ncClientIP,
 			UseSandbox: false,
 		})
 
-		assert.Equal(t, namecheapProductionApiUrl, client.BaseURL)
+		assert.Equal(t, namecheapProductionAPIURL, client.BaseURL)
 	})
 
 	t.Run("sandbox_api_url", func(t *testing.T) {
 		client := NewClient(&ClientOptions{
 			UserName:   ncUserName,
-			ApiUser:    ncApiUser,
-			ApiKey:     ncApiKey,
-			ClientIp:   ncClientIp,
+			ApiUser:    ncAPIUser,
+			ApiKey:     ncAPIKey,
+			ClientIp:   ncClientIP,
 			UseSandbox: true,
 		})
 
-		assert.Equal(t, namecheapSandboxApiUrl, client.BaseURL)
+		assert.Equal(t, namecheapSandboxAPIURL, client.BaseURL)
 	})
 }
 
@@ -87,7 +88,7 @@ func TestNewRequest(t *testing.T) {
 	})
 
 	t.Run("correct_body", func(t *testing.T) {
-		body, err := ioutil.ReadAll(request.Body)
+		body, err := io.ReadAll(request.Body)
 
 		if err != nil {
 			t.Fatal("Unable to read request body", err)
@@ -140,11 +141,11 @@ func TestDecodeBody(t *testing.T) {
 		Boolean bool   `xml:"Boolean,attr"`
 	}
 
-	expectedXml := "<Obj String=\"hello\" Integer=\"10\" Boolean=\"true\"></Obj>"
+	expectedXML := "<Obj String=\"hello\" Integer=\"10\" Boolean=\"true\"></Obj>"
 
 	obj := Obj{}
 
-	err := decodeBody(strings.NewReader(expectedXml), &obj)
+	err := decodeBody(strings.NewReader(expectedXML), &obj)
 
 	if err != nil {
 		log.Fatal("Unable to decode", err)

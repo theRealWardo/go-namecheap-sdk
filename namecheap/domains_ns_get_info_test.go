@@ -1,7 +1,7 @@
 package namecheap
 
 import (
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -34,7 +34,7 @@ func TestDomainNameserversGetInfo(t *testing.T) {
 		var sentBody url.Values
 
 		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-			body, _ := ioutil.ReadAll(request.Body)
+			body, _ := io.ReadAll(request.Body)
 			query, _ := url.ParseQuery(string(body))
 			sentBody = query
 			_, _ = writer.Write([]byte(fakeResponse))
@@ -55,7 +55,7 @@ func TestDomainNameserversGetInfo(t *testing.T) {
 	t.Run("server_empty_response", func(t *testing.T) {
 		fakeLocalResponse := ""
 
-		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, _ *http.Request) {
 			_, _ = writer.Write([]byte(fakeLocalResponse))
 		}))
 		defer mockServer.Close()
@@ -71,7 +71,7 @@ func TestDomainNameserversGetInfo(t *testing.T) {
 	t.Run("server_non_xml_response", func(t *testing.T) {
 		fakeLocalResponse := "non-xml response"
 
-		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, _ *http.Request) {
 			_, _ = writer.Write([]byte(fakeLocalResponse))
 		}))
 		defer mockServer.Close()
@@ -87,7 +87,7 @@ func TestDomainNameserversGetInfo(t *testing.T) {
 	t.Run("server_broken_xml_response", func(t *testing.T) {
 		fakeLocalResponse := "<broken></xml><response>"
 
-		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, _ *http.Request) {
 			_, _ = writer.Write([]byte(fakeLocalResponse))
 		}))
 		defer mockServer.Close()
@@ -115,7 +115,7 @@ func TestDomainNameserversGetInfo(t *testing.T) {
 			</ApiResponse>
 		`
 
-		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, _ *http.Request) {
 			_, _ = writer.Write([]byte(fakeLocalResponse))
 		}))
 		defer mockServer.Close()
@@ -143,7 +143,7 @@ func TestDomainNameserversGetInfo(t *testing.T) {
 			</ApiResponse>
 		`
 
-		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, _ *http.Request) {
 			_, _ = writer.Write([]byte(fakeLocalResponse))
 		}))
 		defer mockServer.Close()
@@ -171,7 +171,7 @@ func TestDomainNameserversGetInfo(t *testing.T) {
 			</ApiResponse>
 		`
 
-		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, _ *http.Request) {
 			_, _ = writer.Write([]byte(fakeLocalResponse))
 		}))
 		defer mockServer.Close()
@@ -199,7 +199,7 @@ func TestDomainNameserversGetInfo(t *testing.T) {
 			</ApiResponse>
 		`
 
-		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, _ *http.Request) {
 			_, _ = writer.Write([]byte(fakeLocalResponse))
 		}))
 		defer mockServer.Close()

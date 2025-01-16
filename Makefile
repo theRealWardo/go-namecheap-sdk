@@ -1,3 +1,5 @@
+.PHONY: $(MAKECMDGOALS)
+
 default: format check lint test
 
 format:
@@ -6,8 +8,13 @@ format:
 check:
 	go vet ./...
 
-test:
-	go test -v ./... -cover -count=1
+test: test-unit test-race
+
+test-unit:
+	go test -v -cover -count=1 ./...
+
+test-race:
+	go test -race ./...
 
 vendor:
 	go mod vendor
@@ -16,5 +23,3 @@ vendor:
 # https://golangci-lint.run/usage/install/#local-installation
 lint:
 	golangci-lint run
-
-.PHONY: vendor
