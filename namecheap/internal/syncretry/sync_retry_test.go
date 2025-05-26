@@ -2,10 +2,11 @@ package syncretry
 
 import (
 	"errors"
-	"github.com/stretchr/testify/assert"
 	"sync/atomic"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var testRetryDelays = []int{1, 2, 3}
@@ -107,7 +108,7 @@ func TestSyncRetry_Do(t *testing.T) {
 				return nil
 			}
 			count++
-			return RetryError
+			return ErrRetry
 		})
 
 		assert.Nil(t, err)
@@ -121,10 +122,10 @@ func TestSyncRetry_Do(t *testing.T) {
 
 		err := sr.Do(func() error {
 			count++
-			return RetryError
+			return ErrRetry
 		})
 
-		assert.ErrorIs(t, RetryAttemptsError, err)
+		assert.ErrorIs(t, ErrRetryAttempts, err)
 	})
 
 	t.Run("two_func_retry_success", func(t *testing.T) {
@@ -143,7 +144,7 @@ func TestSyncRetry_Do(t *testing.T) {
 				count++
 				atomic.AddInt32(&firstFuncCalls, 1)
 				if count != 2 {
-					return RetryError
+					return ErrRetry
 				}
 				return nil
 			})
@@ -157,7 +158,7 @@ func TestSyncRetry_Do(t *testing.T) {
 				count++
 				atomic.AddInt32(&secondFuncCalls, 1)
 				if count != 2 {
-					return RetryError
+					return ErrRetry
 				}
 				return nil
 			})
@@ -189,7 +190,7 @@ func TestSyncRetry_Do(t *testing.T) {
 			err := sr.Do(func() error {
 				count++
 				atomic.AddInt32(&firstFuncCalls, 1)
-				return RetryError
+				return ErrRetry
 			})
 
 			firstDone <- err
@@ -200,7 +201,7 @@ func TestSyncRetry_Do(t *testing.T) {
 			err := sr.Do(func() error {
 				count++
 				atomic.AddInt32(&secondFuncCalls, 1)
-				return RetryError
+				return ErrRetry
 			})
 
 			secondDone <- err
@@ -211,7 +212,7 @@ func TestSyncRetry_Do(t *testing.T) {
 
 		assert.Equal(t, int32(3), firstFuncCalls)
 		assert.Equal(t, int32(3), secondFuncCalls)
-		assert.ErrorIs(t, RetryAttemptsError, err1)
-		assert.ErrorIs(t, RetryAttemptsError, err2)
+		assert.ErrorIs(t, ErrRetryAttempts, err1)
+		assert.ErrorIs(t, ErrRetryAttempts, err2)
 	})
 }

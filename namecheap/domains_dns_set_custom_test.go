@@ -1,14 +1,15 @@
 package namecheap
 
 import (
-	"github.com/stretchr/testify/assert"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDomainsDNSSetCustom(t *testing.T) {
@@ -31,7 +32,7 @@ func TestDomainsDNSSetCustom(t *testing.T) {
 		var sentBody url.Values
 
 		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-			body, _ := ioutil.ReadAll(request.Body)
+			body, _ := io.ReadAll(request.Body)
 			query, _ := url.ParseQuery(string(body))
 			sentBody = query
 			_, _ = writer.Write([]byte(fakeResponse))
@@ -53,7 +54,7 @@ func TestDomainsDNSSetCustom(t *testing.T) {
 		var sentBody url.Values
 
 		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-			body, _ := ioutil.ReadAll(request.Body)
+			body, _ := io.ReadAll(request.Body)
 			query, _ := url.ParseQuery(string(body))
 			sentBody = query
 			_, _ = writer.Write([]byte(fakeResponse))
@@ -76,7 +77,7 @@ func TestDomainsDNSSetCustom(t *testing.T) {
 		var sentBody url.Values
 
 		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-			body, _ := ioutil.ReadAll(request.Body)
+			body, _ := io.ReadAll(request.Body)
 			query, _ := url.ParseQuery(string(body))
 			sentBody = query
 			_, _ = writer.Write([]byte(fakeResponse))
@@ -97,7 +98,7 @@ func TestDomainsDNSSetCustom(t *testing.T) {
 	})
 
 	t.Run("correct_parsing_result_attributes", func(t *testing.T) {
-		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, _ *http.Request) {
 			_, _ = writer.Write([]byte(fakeResponse))
 		}))
 		defer mockServer.Close()
@@ -123,7 +124,7 @@ func TestDomainsDNSSetCustom(t *testing.T) {
 
 	for _, errorCase := range errorCases {
 		t.Run("request_data_error_"+strconv.Itoa(len(errorCase.Nameservers))+"_nameservers", func(t *testing.T) {
-			mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+			mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, _ *http.Request) {
 				_, _ = writer.Write([]byte(fakeResponse))
 			}))
 			defer mockServer.Close()
