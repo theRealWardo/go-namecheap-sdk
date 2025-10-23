@@ -1,6 +1,7 @@
 package namecheap
 
 // DomainsService includes the following methods:
+// DomainsService.Check - checks the availability of domains
 // DomainsService.GetList - returns a list of domains for the particular user
 // DomainsService.Create - registers a new domain
 // DomainsService.GetContacts - gets contact information for the requested domain
