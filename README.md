@@ -1,9 +1,18 @@
+
+> [!TIP]
+> This fork of https://github.com/namecheap/go-namecheap-sdk that includes support for many missing endpoints such as `namecheap.domains.check` and `namecheap.domains.create`.
+> See the [release notes](https://github.com/theRealWardo/go-namecheap-sdk/releases) for additionally supported endpoints.
+>
+> Patches welcome or just open an issue if you would like another endpoint supported.
+
+
 # Go Namecheap SDK
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/namecheap/go-namecheap-sdk.svg)](https://pkg.go.dev/github.com/namecheap/go-namecheap-sdk/v2)
 
 - [Namecheap API Documentation](https://www.namecheap.com/support/api/intro/)
 - [Sandbox](https://www.namecheap.com/support/knowledgebase/article.aspx/763/63/what-is-sandbox/)
+
 
 ### Getting
 
