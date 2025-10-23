@@ -5,6 +5,7 @@ package namecheap
 // DomainsService.GetList - returns a list of domains for the particular user
 // DomainsService.Create - registers a new domain
 // DomainsService.GetContacts - gets contact information for the requested domain
+// DomainsService.GetTldList - returns a list of TLDs
 //
 // Namecheap doc: https://www.namecheap.com/support/api/methods/domains/
 type DomainsService service
