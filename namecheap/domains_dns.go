@@ -1,6 +1,7 @@
 package namecheap
 
 // DomainsDNSService includes the following methods:
+// DomainsDNSService.GetEmailForwarding - gets email forwarding settings for the requested domain
 // DomainsDNSService.GetHosts - retrieves DNS host record settings for the requested domain
 // DomainsDNSService.GetList - gets a list of DNS servers associated with the requested domain
 // DomainsDNSService.SetCustom - sets domain to use custom DNS servers
