@@ -25,6 +25,9 @@ type DomainsNSCreateResult struct {
 	IsSuccess  *bool   `xml:"IsSuccess,attr"`
 }
 
+// Create creates a new nameserver.
+//
+// Namecheap doc: https://www.namecheap.com/support/api/methods/domains-ns/create/
 func (s *DomainsNSService) Create(sld, tld, nameserver, ipAddress string) (*NameserversCreateCommandResponse, error) {
 	var response NameserversCreateResponse
 

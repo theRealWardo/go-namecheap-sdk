@@ -24,6 +24,9 @@ type DomainsNSDeleteResult struct {
 	IsSuccess  *bool   `xml:"IsSuccess,attr"`
 }
 
+// Delete deletes a nameserver associated with the requested domain.
+//
+// Namecheap doc: https://www.namecheap.com/support/api/methods/domains-ns/delete/
 func (s *DomainsNSService) Delete(sld, tld, nameserver string) (*NameserversCreateCommandResponse, error) {
 	var response NameserversDeleteResponse
 

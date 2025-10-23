@@ -24,6 +24,9 @@ type DomainsNSUpdateResult struct {
 	IsSuccess  *bool   `xml:"IsSuccess,attr"`
 }
 
+// Update updates the IP address of a registered nameserver.
+//
+// Namecheap doc: https://www.namecheap.com/support/api/methods/domains-ns/update/
 func (s *DomainsNSService) Update(sld, tld, nameserver, oldIP, ip string) (*NameserversCreateCommandResponse, error) {
 	var response NameserversUpdateResponse
 

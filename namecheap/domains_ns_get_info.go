@@ -27,6 +27,9 @@ type DomainNSInfoResult struct {
 	} `xml:"NameserverStatuses"`
 }
 
+// GetInfo gets info about a registered nameserver.
+//
+// Namecheap doc: https://www.namecheap.com/support/api/methods/domains-ns/getinfo/
 func (s *DomainsNSService) GetInfo(sld, tld, nameserver string) (*NameserversGetInfoCommandResponse, error) {
 	var response NameserversGetInfoResponse
 
