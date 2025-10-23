@@ -8,6 +8,7 @@ package namecheap
 // DomainsService.GetTldList - returns a list of TLDs
 // DomainsService.Reactivate - reactivates an expired domain
 // DomainsService.Renew - renews an expiring domain
+// DomainsService.GetRegistrarLock - gets the Registrar Lock status for the requested domain
 //
 // Namecheap doc: https://www.namecheap.com/support/api/methods/domains/
 type DomainsService service
