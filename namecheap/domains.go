@@ -7,6 +7,7 @@ package namecheap
 // DomainsService.GetContacts - gets contact information for the requested domain
 // DomainsService.GetTldList - returns a list of TLDs
 // DomainsService.Reactivate - reactivates an expired domain
+// DomainsService.Renew - renews an expiring domain
 //
 // Namecheap doc: https://www.namecheap.com/support/api/methods/domains/
 type DomainsService service
